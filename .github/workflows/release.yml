@@ -1,0 +1,96 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+concurrency:
+  group: build-bins
+  cancel-in-progress: true
+
+permissions:
+  contents: write
+
+jobs:
+  create-body:
+    runs-on: ubuntu-20.04
+    outputs:
+      body: Release ${{ github.ref_name }}
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      # - uses: orhun/git-cliff-action@v2
+      #   id: git-cliff
+      #   with:
+      #     args: --verbose --latest --strip header
+      - name: Create initial release
+        uses: softprops/action-gh-release@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: Release ${{ github.ref_name }}
+          tag_name: ${{ github.ref }}
+          name: ${{ github.ref_name }}
+
+  upload-bin:
+    needs: create-body
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - target: aarch64-unknown-linux-gnu
+            os: ubuntu-20.04
+            extension: ''
+            cross: true
+          - target: x86_64-unknown-linux-gnu
+            os: ubuntu-20.04
+            extension: ''
+          - target: x86_64-pc-windows-msvc
+            os: windows-latest
+            extension: '.exe'
+          - target: aarch64-apple-darwin
+            os: macos-latest
+            extension: ''
+          - target: x86_64-apple-darwin
+            os: macos-latest
+            extension: ''
+    name: ${{ matrix.target }}
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Install cross-compilation tools
+        uses: taiki-e/setup-cross-toolchain-action@v1
+        if: ${{ matrix.cross == true }}
+        with:
+          target: ${{ matrix.target }}
+      - name: Add target
+        if: ${{ !matrix.cross }}
+        run: rustup target add ${{ matrix.target }}
+      - uses: Swatinem/rust-cache@v2
+      - name: Build Binary
+        run: cargo build --target ${{ matrix.target }} --release --locked
+      - name: Move Binary To Root
+        run: cp target/${{ matrix.target }}/release/sfs${{ matrix.extension }} sfs${{ matrix.extension }}
+      - name: Archive Binary
+        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+            7z a -tzip "sfs-${{ matrix.target }}.zip" \
+              sfs${{ matrix.extension }} \
+              README.md \
+              LICENSE
+          else
+            tar -czvf sfs-${{ matrix.target }}.tar.gz \
+              sfs${{ matrix.extension }} \
+              README.md \
+              LICENSE
+          fi
+      - name: Add Artifact To Release
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          body: ${{ needs.create-body.outputs.body }}
+          file: sfs-${{ matrix.target }}*
+          file_glob: true
+          overwrite: true
+          tag: ${{ github.ref }}
+          release_name: ${{ github.ref_name }}
