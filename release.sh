@@ -1,3 +1,3 @@
 #!/bin/sh
 
-cargo release --allow-branch main --tag-name 'v{{version}}' -v $@
+cargo release --tag-name 'v{{version}}' -v $@
