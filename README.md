@@ -9,6 +9,20 @@ A very simple file server, named after my favorite kind of ice cream :icecream:
 - TFTP
 - As simple as it gets
 
+## Installation
+
+With [`cargo-binstall`]([http://binstall](https://github.com/cargo-bins/cargo-binstall?tab=readme-ov-file))
+
+```bash
+cargo binstall soft-serve
+```
+
+or `cargo install`
+
+```bash
+cargo install soft-serve --locked
+```
+
 ## Usage
 
 Serves the current directory over HTTP
