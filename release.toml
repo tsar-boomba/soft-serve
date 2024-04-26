@@ -1,4 +1,4 @@
 pre-release-hook = ["git", "cliff", "-o", "CHANGELOG.md", "--tag", "{{version}}" ]
 pre-release-replacements = [
-  { file = "README.md", search = "predicates = .*", replace = "{{crate_name}} = { version = \"{{version}}\", no-default-features = true, features = [\"http\", \"ftp\"] }" },
+  { file = "README.md", search = "soft-serve = .*", replace = "{{crate_name}} = { version = \"{{version}}\", no-default-features = true, features = [\"http\", \"ftp\"] }" },
 ]
