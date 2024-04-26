@@ -13,5 +13,5 @@ if [[ -n $(git status --porcelain) ]]; then
 fi
 
 git-cliff -o CHANGELOG.md
-git commit -m "chore(release) prepare for release"
+git commit -am "chore(release) prepare for release"
 cargo release --tag-name 'v{{version}}' -v -x $@

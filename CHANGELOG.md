@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.0.5] - 2024-04-26
+
+### ⚙️ Miscellaneous Tasks
+
+- Release soft-serve version 0.0.5
+
 ## [0.0.4] - 2024-04-26
 
 ### ⚙️ Miscellaneous Tasks
