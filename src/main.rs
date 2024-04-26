@@ -8,7 +8,7 @@ use clap::{Parser, Subcommand};
 use color_eyre::eyre::Result;
 
 #[derive(Debug, Parser)]
-#[command(name = "exs - Expeditious Serve", version, about = "Easily serve your filesystem over HTTP, FTP, or TFTP. Defaults to HTTP.", long_about = None)]
+#[command(name = "sfs - Soft Serve", version, about = "Easily serve your filesystem over HTTP, FTP, or TFTP. Defaults to HTTP.", long_about = None)]
 #[command(propagate_version = true)]
 struct Cli {
     #[arg(default_value = ".")]
