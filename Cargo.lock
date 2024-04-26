@@ -1772,7 +1772,7 @@ dependencies = [
 
 [[package]]
 name = "soft-serve"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "async-tftp",
  "clap",
