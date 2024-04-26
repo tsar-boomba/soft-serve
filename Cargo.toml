@@ -1,6 +1,9 @@
 [package]
 name = "soft-serve"
 version = "0.0.1"
+description = "Easily serve your filesystem."
+license = "MIT"
+repository = "https://github.com/tsar-boomba/soft-serve"
 edition = "2021"
 
 [[bin]]
@@ -13,7 +16,7 @@ codegen-units = 1
 lto = true
 
 [features]
-default = []
+default = ["cli"]
 http = ["hyper", "hyper-util", "http-body-util", "tokio-stream", "tokio-util", "mime_guess"]
 ftp = ["libunftp", "unftp-sbe-fs", "async-tftp"]
 cli = ["clap", "tracing-subscriber", "http", "ftp"]

@@ -58,3 +58,9 @@ Turns off the convenience functionality of `/` being treated as `/index.html`.
 #### `--trivial` or `-t` (FTP only)
 
 Serve files over TFTP instead of FTP.
+
+### As Library
+
+```toml
+soft-serve = { version = "*", no-default-features = true, features = ["http", "ftp"] }
+```
