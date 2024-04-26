@@ -7,7 +7,10 @@ use unftp_sbe_fs::ServerExt;
 pub async fn serve(root_path: Arc<Path>, listen_addr: SocketAddr) -> Result<()> {
     let server = libunftp::Server::with_fs(root_path.to_path_buf());
 
-    tracing::info!("FTP server listening on {}", listen_addr.to_string().cyan().underline());
+    tracing::info!(
+        "FTP server listening on {}",
+        listen_addr.to_string().cyan().underline()
+    );
     server.listen(listen_addr.to_string()).await?;
     Ok(())
 }
@@ -18,7 +21,10 @@ pub async fn serve_trivial(root_path: Arc<Path>, listen_addr: SocketAddr) -> Res
         .build()
         .await?;
 
-    tracing::info!("TFTP server listening on {}", listen_addr.to_string().cyan().underline());
+    tracing::info!(
+        "TFTP server listening on {}",
+        listen_addr.to_string().cyan().underline()
+    );
     tftpd.serve().await?;
     Ok(())
 }
