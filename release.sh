@@ -14,4 +14,4 @@ fi
 
 git cliff > CHANGELOG.md
 git commit -m "chore(release) prepare for release"
-cargo release --tag-name 'v{{version}}' -v $@
+cargo release --tag-name 'v{{version}}' -v -x $@
