@@ -41,6 +41,14 @@ jobs:
             os: ubuntu-20.04
             extension: ''
             cross: true
+          - target: aarch64-unknown-linux-musl
+            os: ubuntu-20.04
+            extension: ''
+            cross: true
+          - target: x86_64-unknown-linux-musl
+            os: ubuntu-20.04
+            extension: ''
+            cross: true
           - target: x86_64-unknown-linux-gnu
             os: ubuntu-20.04
             extension: ''
