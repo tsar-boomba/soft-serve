@@ -62,5 +62,5 @@ Serve files over TFTP instead of FTP.
 ### As Library
 
 ```toml
-soft-serve = { version = "0.0.3", no-default-features = true, features = ["http", "ftp"] }
+soft-serve = { version = "0.0.4", no-default-features = true, features = ["http", "ftp"] }
 ```
