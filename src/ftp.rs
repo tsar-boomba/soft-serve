@@ -5,7 +5,7 @@ use color_eyre::{eyre::Result, owo_colors::OwoColorize};
 use unftp_sbe_fs::ServerExt;
 
 pub async fn serve(root_path: Arc<Path>, listen_addr: SocketAddr) -> Result<()> {
-    let server = libunftp::Server::with_fs(root_path.to_path_buf());
+    let server = libunftp::Server::with_fs(root_path.to_path_buf()).build()?;
 
     tracing::info!(
         "FTP server listening on {}",

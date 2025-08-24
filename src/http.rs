@@ -17,7 +17,7 @@ use hyper_util::{
     rt::{TokioExecutor, TokioIo},
     server::conn::auto::Builder,
 };
-use tokio::net::TcpListener;
+use tokio::{io::BufReader, net::TcpListener};
 use tokio_stream::StreamExt;
 use tokio_util::io::ReaderStream;
 
@@ -112,28 +112,36 @@ pub async fn handle_request(
 
     let meta = file.metadata().await?;
 
-    if meta.is_dir() && no_index_convenience {
-        return Ok(not_found(path));
-    } else if path == "/" && !no_index_convenience {
-        // Convenience for serving websites
-        let new_file_path = root_path.join("index.html");
-        file = match tokio::fs::OpenOptions::new()
-            .read(true)
-            .open(&new_file_path)
-            .await
-        {
-            Ok(file) => file,
-            Err(_) => {
+    if meta.is_dir() {
+        if no_index_convenience {
+            return Ok(not_found(path));
+        } else {
+            // Convenience for serving websites
+            let new_file_path = file_path.join("index.html");
+            file = match tokio::fs::OpenOptions::new()
+                .read(true)
+                .open(&new_file_path)
+                .await
+            {
+                Ok(file) => file,
+                Err(_) => {
+                    println!("{} {}", "404".yellow().bold(), path);
+                    return Ok(not_found(path));
+                }
+            };
+
+            if file.metadata().await?.is_dir() {
                 println!("{} {}", "404".yellow().bold(), path);
                 return Ok(not_found(path));
             }
-        };
 
-        file_path = new_file_path;
-        println!("Remapped `/` to `index.html`");
+            file_path = new_file_path;
+            tracing::debug!("Remapped to {}", file_path.display());
+        }
     }
 
-    let stream = ReaderStream::new(file).map(|read_res| read_res.map(Frame::data));
+    let stream = ReaderStream::new(BufReader::with_capacity(16 * 1024, file))
+        .map(|read_res| read_res.map(Frame::data));
     let mime = mime_guess::from_path(&file_path).first_or_text_plain();
 
     println!("{} {}", "200".green().bold(), path);
